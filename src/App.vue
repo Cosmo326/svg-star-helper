@@ -1,45 +1,62 @@
 <template>
-  <div class="p-5">
-    <div class="inputs">
-      <label>
-        Point count
-        <input type="number" class="form-control" min="3" v-model="count" />
-      </label>
-      <label>
-        Radius of outer points
-        <input type="number" class="form-control" :min="innerRadius" v-model="outerRadius" />
-      </label>
-      <label>
-        Radius of inner points
-        <input type="number" class="form-control" min="1" v-model="innerRadius" />
-      </label>
+  <div class="container mt-3">
+    <div class="card">
+      <div class="card-header"><h1 class="card-title text-align-start">SVG star Generator</h1></div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-auto">
+          <label>
+            Point count
+            <input type="number" class="form-control" min="3" v-model="count" />
+          </label>
+          </div>
+          <div class="col-auto">
+          <label>
+            Radius of outer points
+            <input type="number" class="form-control" :min="innerRadius" v-model="outerRadius" />
+          </label>
+          </div>
+          <div class="col-auto">
+          <label>
+            Radius of inner points
+            <input type="number" class="form-control" min="1" v-model="innerRadius" />
+          </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col p-5">
+            <div class="table-responsive">
+            <table class="table table-striped-columns text-center">
+              <thead>
+                <tr>
+                  <th>Stop</th>
+                  <th>Outer X</th>
+                  <th>Outer Y</th>
+                  <th>Inner X</th>
+                  <th>Inner Y</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="n in this.count" :key="n">
+                  <td>{{n}}</td>
+                  <td>{{ this.calculateX(n-1, this.outerRadius, false) }}</td>
+                  <td>{{ this.calculateY(n-1, this.outerRadius, false) }}</td>
+                  <td>{{ this.calculateX(n, this.innerRadius, true) }}</td>
+                  <td>{{ this.calculateY(n, this.innerRadius, true) }}</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col text-center">&lt;polygon points="{{this.getPoints()}}" /&gt;</div>
+        </div>
+        <div class="row">
+          <div class="col text-center"><img :src="this.getData()" alt="star image" class="img-fluid" :width="this.outerRadius * 2" :height="this.outerRadius * 2"/></div>
+        </div>
+      </div>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Stop</th>
-          <th>Outer X</th>
-          <th>Outer Y</th>
-          <th>Inner X</th>
-          <th>Inner Y</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="n in this.count" :key="n">
-          <td>{{n}}</td>
-          <td>{{ this.calculateX(n-1, this.outerRadius, false) }}</td>
-          <td>{{ this.calculateY(n-1, this.outerRadius, false) }}</td>
-          <td>{{ this.calculateX(n, this.innerRadius, true) }}</td>
-          <td>{{ this.calculateY(n, this.innerRadius, true) }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div>
-      &lt;polygon points="{{this.getPoints()}}" /&gt;
-    </div>
-    <svg :viewbox="`0 0 ${this.outerRadius * 2} ${this.outerRadius * 2}`">
-      <polygon :points="this.getPoints()" />
-    </svg>
   </div>
 </template>
  
@@ -78,21 +95,15 @@ export default {
       }
 
       return result;
+    },
+    getData() {
+      return "data:image/svg+xml, " + `<svg xmlns='http://www.w3.org/2000/svg' viewbox="0 0 ${ this.outerRadius * 2 } ${ this.outerRadius * 2 }"><polygon points="${ this.getPoints() }" /></svg>`
     }
   }
 }
 </script>
  
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
 .inputs {
   display: grid;
   grid-auto-flow: column;
